@@ -1,2 +1,2 @@
-CakePHP-Youtube-Helper
+CakePHP 2.x Youtube Helper
 ======================
