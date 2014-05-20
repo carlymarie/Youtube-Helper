@@ -25,6 +25,10 @@ private $player_object = array(
     'allowscriptaccess' => 'always',
     'wmode'             => 'transparent' // Ensures player stays under overlays such as lightbox/fancybox
 )
-```
-Thumbnail Usage: <?=$this->Youtube->thumbnail(URL_OR_VIDEO_ID, (Array) Options);
-Video Usage: <?=$this->Youtube->video(URL_OR_VIDEO_ID, $options, $player_object);
+Thumbnail Usage: ```php<?=$this->Youtube->thumbnail(URL_OR_VIDEO_ID, (Array) Options);```
+Video Usage: ```php<?=$this->Youtube->video(URL_OR_VIDEO_ID, $options, $player_object);```
+
+First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
