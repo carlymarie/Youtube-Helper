@@ -1,5 +1,6 @@
 CakePHP 2.x Youtube Helper
 ======================
+```php
 private $options = array(
 	'fs'        => true,   // Enables / Disables fullscreen playback
 	'hd'        => true,   // Enables / Disables HD playback (Chromeless player does not support this setting)
@@ -24,6 +25,6 @@ private $player_object = array(
     'allowscriptaccess' => 'always',
     'wmode'             => 'transparent' // Ensures player stays under overlays such as lightbox/fancybox
 )
-
+```
 Thumbnail Usage: <?=$this->Youtube->thumbnail(URL_OR_VIDEO_ID, (Array) Options);
 Video Usage: <?=$this->Youtube->video(URL_OR_VIDEO_ID, $options, $player_object);
