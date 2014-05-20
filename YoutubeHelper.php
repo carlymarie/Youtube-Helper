@@ -11,8 +11,8 @@
 		// All these settings can be changed on the fly using the $player_variables option in the video function
 		private $_player = array(
 			'type'        => 'text/html', // Content type of the iframe
-			'class'       => 'youtube',	  // Adds CSS class to iframe
-			'frameborder' => 0,			  // Enables / Disables iframe border
+			'class'       => 'youtube',   // Adds CSS class to iframe
+			'frameborder' => 0,           // Enables / Disables iframe border
 			'width'       => 624,         // Sets player width
 			'height'      => 369,         // Sets player height
 			'origin'      => null         // For added security
