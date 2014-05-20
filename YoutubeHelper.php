@@ -3,13 +3,13 @@
     class YoutubeHelper extends HtmlHelper {
 
         // An array of Youtube API's this helper will use
-        var $apis = array(
+        private $apis = array(
             'image'  => 'http://i.ytimg.com/vi/%s/%s.jpg', // Location of youtube images
             'player' => 'http://www.youtube.com/v/%s?%s'   // Location of youtube player
         );
 
         // All these settings can be changed on the fly using the $player_variables option in the video function
-        var $player_variables = array(
+        private $player_variables = array(
             'type'              => 'application/x-shockwave-flash',
             'class'             => 'youtube',
             'width'             => 624,          // Sets player width
@@ -20,7 +20,7 @@
         );
 
         // All these settings can be changed on the fly using the $player_settings option in the video function
-        var $player_settings = array(
+        private $player_settings = array(
             'fs'        => true,   // Enables / Disables fullscreen playback
             'hd'        => true,   // Enables / Disables HD playback (Chromeless player does not support this setting)
             'egm'       => false,  // Enables / Disables advanced context (Right-Click) menu
@@ -37,7 +37,7 @@
         );
 
         // Outputs Youtube video image
-        function thumbnail($url, $size = 'thumb', $options = array()) {
+        public function thumbnail($url, $size = 'thumb', $options = array()) {
 
             // Sets the video ID for the image API
             $video_id = $this->getVideoId($url);
@@ -58,7 +58,7 @@
         }
 
         // Outputs embedded Youtube player
-        function video($url, $settings = array(), $variables = array()) {
+        public function video($url, $settings = array(), $variables = array()) {
 
             // Sets the video ID for the player API
             $video_id = $this->getVideoId($url);
@@ -89,7 +89,7 @@
         }
 
         // Extracts Video ID's from a Youtube URL
-        function getVideoId($url = null){
+        public function getVideoId($url = null){
 
             parse_str(parse_url($url, PHP_URL_QUERY), $params);
             return (isset($params['v']) ? $params['v'] : $url);
