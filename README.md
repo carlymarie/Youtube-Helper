@@ -7,7 +7,7 @@ CakePHP 2.x Youtube Helper
 
 ### Video Usage
 ```php
-<?=$this->Youtube->video(URL_OR_VIDEO_ID, $settings, $variables);
+<?=$this->Youtube->video(URL_OR_VIDEO_ID, $url_params, $iframe_params);
 ```
 
 ### Thumbnail Sizes
