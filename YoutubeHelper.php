@@ -1,98 +1,87 @@
 <?php
-    App::import('Helper', 'Html');
-    class YoutubeHelper extends HtmlHelper {
+	App::uses('HtmlHelper', 'View/Helper');
+	class YoutubeHelper extends HtmlHelper {
 
-        // An array of Youtube API's this helper will use
-        private $apis = array(
-            'image'  => 'http://i.ytimg.com/vi/%s/%s.jpg', // Location of youtube images
-            'player' => 'http://www.youtube.com/v/%s?%s'   // Location of youtube player
-        );
+		// An array of Youtube API's this helper will use
+		private $_apis = array(
+			'image'       => 'http://i.ytimg.com/vi/%s/%s.jpg',   // Location of youtube images
+			'player'      => 'http://www.youtube.com/embed/%s?%s' // Location of youtube player
+		);
 
-        // All these settings can be changed on the fly using the $player_variables option in the video function
-        private $player_variables = array(
-            'type'              => 'application/x-shockwave-flash',
-            'class'             => 'youtube',
-            'width'             => 624,          // Sets player width
-            'height'            => 369,          // Sets player height
-            'allowfullscreen'   => 'true',       // Gives script access to fullscreen (This is required for the fs player setting to work)
-            'allowscriptaccess' => 'always',
-            'wmode'             => 'transparent' // Ensures player stays under overlays such as lightbox/fancybox
-        );
+		// All these settings can be changed on the fly using the $player_variables option in the video function
+		private $_player = array(
+			'type'        => 'text/html', // Content type of the iframe
+			'class'       => 'youtube',	  // Adds CSS class to iframe
+			'frameborder' => 0,			  // Enables / Disables iframe border
+			'width'       => 624,         // Sets player width
+			'height'      => 369,         // Sets player height
+			'origin'      => null         // For added security
+		);
 
-        // All these settings can be changed on the fly using the $player_settings option in the video function
-        private $player_settings = array(
-            'fs'        => true,   // Enables / Disables fullscreen playback
-            'hd'        => true,   // Enables / Disables HD playback (Chromeless player does not support this setting)
-            'egm'       => false,  // Enables / Disables advanced context (Right-Click) menu
-            'rel'       => false,  // Enables / Disables related videos at the end of the video
-            'loop'      => false,  // Loops video once its finished
-            'start'     => 0,      // Start the video at X seconds
-            'version'   => 3,      // For chromeless player set version to 3
-            'autoplay'  => false,  // Automatically starts video when page is loaded
-            'autohide'  => false,  // Automatically hides controls once the video begins
-            'controls'  => true,   // Enables / Disables player controls (Chromeless Only)
-            'showinfo'  => false,  // Enables / Disables information like the title before the video starts playing
-            'disablekb' => false,  // Enables / Disables keyboard controls
-            'theme'     => 'light' // Dark / Light style themes
-        );
+		// All these settings can be changed on the fly using the $player_settings option in the video function
+		private $_url = array(
+			'fs'          => true,        // Enables / Disables fullscreen playback
+			'rel'         => false,       // Enables / Disables related videos at the end of the video
+			'loop'        => false,       // Loops video once its finished
+			'start'       => 0,           // Starts video at specific time in seconds
+			'version'     => 3,           // For chromeless player set version to 3
+			'autoplay'    => false,       // Automatically starts video when page is loaded
+			'autohide'    => false,       // Automatically hides controls once the video begins
+			'controls'    => true,        // Enables / Disables player controls (Chromeless Only)
+			'showinfo'    => false,       // Enables / Disables information like the title before the video starts playing
+			'disablekb'   => false,       // Enables / Disables keyboard controls
+			'theme'       => 'light',     // Dark / Light style themes
+			'enablejsapi' => 0            // Enables / Disables the Javascript API
+		);
 
-        // Outputs Youtube video image
-        public function thumbnail($url, $size = 'thumb', $options = array()) {
+		// Humanized array of allowed image sizes
+		private $_sizes = array(
+			'thumb'       => 'default',   // 120px x 90px
+			'large'       => 0,           // 480px x 360px
+			'offset25'    => 1,           // 120px x 90px at position 25%
+			'offset50'    => 2,           // 120px x 90px at position 50%
+			'offset75'    => 3            // 120px x 90px at position 75%
+		);
 
-            // Sets the video ID for the image API
-            $video_id = $this->getVideoId($url);
+		// Outputs Youtube video image
+		public function thumbnail($url, $size = 'thumb', $options = array()) {
 
-            // Humanized array of allowed image sizes
-            $accepted_sizes = array(
-                'thumb'  => 'default', // 120px x 90px
-                'large'  => 0,         // 480px x 360px
-                'thumb1' => 1,         // 120px x 90px at position 25%
-                'thumb2' => 2,         // 120px x 90px at position 50%
-                'thumb3' => 3          // 120px x 90px at position 75%
-            );
+			// Gets the video ID for the image API
+			$video_id = $this->__getVideoId($url);
 
-            // Build url to image file
-            $image_url = sprintf($this->apis['image'], $video_id, $accepted_sizes[$size]);
+			// Build url to image file
+			$image_url = sprintf($this->_apis['image'], $video_id, (array_key_exists($size, $this->_sizes) ? $this->_sizes[$size] : 0));
 
-            return $this->image($image_url, $options);
-        }
+			return $this->image($image_url, $options);
+		}
 
-        // Outputs embedded Youtube player
-        public function video($url, $settings = array(), $variables = array()) {
+		// Outputs embedded iframe player
+		public function video($url, $url_params = array(), $player_params = array()) {
 
-            // Sets the video ID for the player API
-            $video_id = $this->getVideoId($url);
+			// Gets the video ID for the player API
+			$id = $this->__getVideoId($url);
 
-            // Sets flash player settings if different than default
-            $settings  = array_merge($this->player_settings, $settings);
+			// Sets url parameters for the player if different than default
+			$url_params  = array_merge($this->_url, $url_params);
 
-            // Sets flash player variables if different than default
-            $variables = array_merge($this->player_variables, $variables);
+			// Sets origin parameter to protect against malicious third-party JavaScript being injected into your page and hijacking control of your YouTube player
+			$url_params['origin'] = str_replace(env('SCRIPT_URL'),null, env('SCRIPT_URI'));
 
-            // Sets src variable for a valid object
-            $variables['src'] = sprintf($this->apis['player'], $video_id, http_build_query($settings));
+			// Sets iframe player parameters if different than default
+			$player_params = array_merge($this->_player, $player_params);
 
-            // Returns embedded video
-            return $this->tag('object',
-                $this->tag('param', null, array('name' => 'movie',             'value' => $variables['src'])).
-                $this->tag('param', null, array('name' => 'allowFullScreen',   'value' => $variables['allowfullscreen'])).
-                $this->tag('param', null, array('name' => 'allowscriptaccess', 'value' => $variables['allowscriptaccess'])).
-                $this->tag('param', null, array('name' => 'wmode',             'value' => $variables['wmode'])).
-                $this->tag('embed', null, $variables), array(
-                    'width'  => $variables['width'],
-                    'height' => $variables['height'],
-                    'data'   => $variables['src'],
-                    'type'   => $variables['type'],
-                    'class'  => $variables['class']
-                )
-            );
-        }
+			// Sets src parameter for the video
+			$player_params['src'] = sprintf($this->_apis['player'], $id, http_build_query($url_params));
 
-        // Extracts Video ID's from a Youtube URL
-        public function getVideoId($url = null){
+			// Returns embedded iframe video
+			return $this->tag('iframe', '', $player_params);
+		}
 
-            parse_str(parse_url($url, PHP_URL_QUERY), $params);
-            return (isset($params['v']) ? $params['v'] : $url);
+		// Extracts Video ID's from a Youtube URL
+		public function __getVideoId($url = null){
 
-        }
-    }
+			parse_str(parse_url($url, PHP_URL_QUERY), $params);
+			return (isset($params['v']) ? $params['v'] : $url);
+
+		}
+	}
