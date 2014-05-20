@@ -1,15 +1,15 @@
 CakePHP 2.x Youtube Helper
 ======================
-Thumbnail Usage
+### Thumbnail Usage
 ```php
 <?=$this->Youtube->thumbnail(URL_OR_VIDEO_ID, $size, $htmlHelperOptions);
 ```
 
-## H2 Video Usage
+### Video Usage
 ```php
 <?=$this->Youtube->video(URL_OR_VIDEO_ID, $settings, $variables);
 ```
-## H2 Thumbnail Sizes
+### Thumbnail Sizes
 Size  | Output
 ------------- | -------------
 thumb			  | 120px x 90px
@@ -18,7 +18,7 @@ thumb1			  | 120px x 90px at position 25%
 thumb2			  | 120px x 90px at position 50%
 thumb3  		  | 120px x 90px at position 75%
 
-## H2 Video Options
+### Video Options
 Setting | value
 ------------- | -------------
 fs        | **Default**: true, Enables / Disables fullscreen playback
@@ -35,7 +35,7 @@ showinfo  | **Default**: false, Enables / Disables information like the title be
 disablekb | **Default**: false, Enables / Disables keyboard controls
 theme     | **Default**: light, Dark / Light style themes
 
-## H2 Video Element Options
+### Video Element Options
 Variable  | Value
 ------------- | -------------
 type			  | **Default**: application/x-shockwave-flash
